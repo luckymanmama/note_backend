@@ -9,4 +9,3 @@ class User(SQLAlchemyBaseUserTable, TimestampMixin, Base):
     """Base User model with UUID as primary key and timestamp columns."""
     notes: Mapped[List["notes.Note"]] = relationship(back_populates="user")
     is_active: Mapped
-    is_verified: bool

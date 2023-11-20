@@ -7,7 +7,6 @@ from pydantic import ConfigDict, EmailStr
 
 class UserRead(CreateUpdateDictModel, Generic[models.ID]):
     id: models.ID
-    username: str
     email: EmailStr
 
     if PYDANTIC_V2:  # pragma: no cover
@@ -19,6 +18,5 @@ class UserRead(CreateUpdateDictModel, Generic[models.ID]):
 
 
 class UserCreate(CreateUpdateDictModel):
-    username: str
     email: EmailStr
     password: str

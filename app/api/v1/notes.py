@@ -1,8 +1,7 @@
-import uuid
-
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ..core.authentication import current_active_user
 from ..core.crud import CRUDBase
 from ..core.models.notes import Note
 from ..core.models.users import User
@@ -22,7 +21,7 @@ async def get_all_notes(db: AsyncSession = Depends(get_db)):
 
 @router.get("/{id}")
 @check_note_ownership
-async def get_note(id: uuid.UUID, db: AsyncSession = Depends(get_db)):
+async def get_note(id: int, db: AsyncSession = Depends(get_db)):
     note = await notes_crud.get(db, id)
     if note is None:
         raise HTTPException(status_code=404, detail="Note not found")
@@ -30,13 +29,16 @@ async def get_note(id: uuid.UUID, db: AsyncSession = Depends(get_db)):
 
 
 @router.post("/")
-async def create_note(note_in: NoteCreate, db: AsyncSession = Depends(get_db)):
-    return await notes_crud.create(db, obj_in=note_in)
+async def create_note(note_in: NoteCreate,
+                      db: AsyncSession = Depends(get_db),
+                      current_user: User = Depends(current_active_user),
+                      ):
+    return await notes_crud.create(db, obj_in={**note_in, "user_id": current_user.id})
 
 
 @router.put("/{id}")
 @check_note_ownership
-async def update_note(id: uuid.UUID, note_in: NoteUpdate, db: AsyncSession = Depends(get_db)):
+async def update_note(id: int, note_in: NoteUpdate, db: AsyncSession = Depends(get_db)):
     note = await notes_crud.get(db, id)
     if note is None:
         raise HTTPException(status_code=404, detail="Note not found")
@@ -45,7 +47,7 @@ async def update_note(id: uuid.UUID, note_in: NoteUpdate, db: AsyncSession = Dep
 
 @router.delete("/{id}")
 @check_note_ownership
-async def delete_note(id: uuid.UUID, db: AsyncSession = Depends(get_db)):
+async def delete_note(id: int, db: AsyncSession = Depends(get_db)):
     note = await notes_crud.get(db, id)
     if note is None:
         raise HTTPException(status_code=404, detail="Note not found")

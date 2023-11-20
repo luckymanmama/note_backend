@@ -21,11 +21,9 @@ def upgrade() -> None:
     op.create_table(
         'user',
         sa.Column('id', sa.Integer, primary_key=True),
-        sa.Column('username', sa.String(100), nullable=False),
         sa.Column('email', sa.String(), nullable=False),
         sa.Column('hashed_password', sa.String(), nullable=True, unique=True),
         sa.Column('is_active', sa.Boolean(), nullable=False),
-        sa.Column('is_verified', sa.Boolean(), nullable=False),
         sa.Column('notes', sa.Integer(), nullable=True),
         sa.Column('created_at', sa.DateTime()),
         sa.Column('updated_at', sa.DateTime())

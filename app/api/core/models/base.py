@@ -32,22 +32,15 @@ class SQLAlchemyBaseUserTable(Generic[ID]):
 
     if TYPE_CHECKING:  # pragma: no cover
         id: ID
-        username: str
         email: str
         hashed_password: str
         is_active: bool
         is_verified: bool
     else:
-        username: Mapped[str] = mapped_column(
-            String(length=320), unique=True, index=True, nullable=False
-        )
         email: Mapped[str] = mapped_column(
             String(length=320), unique=True, index=True, nullable=False
         )
         is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
         hashed_password: Mapped[str] = mapped_column(
             String(length=1024), nullable=False
-        )
-        is_verified: Mapped[bool] = mapped_column(
-            Boolean, default=False, nullable=False
         )

@@ -6,5 +6,5 @@ from ..core.schemas.users import UserRead, UserCreate
 router = APIRouter()
 
 
-router.include_router(fastapi_auth.get_auth_router(auth_backend), prefix="/jwt")
-router.include_router(fastapi_auth.get_register_router(UserRead, UserCreate))
+router.include_router(fastapi_auth.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"],)
+router.include_router(fastapi_auth.get_register_router(UserRead, UserCreate), prefix="/auth", tags=["auth"],)
